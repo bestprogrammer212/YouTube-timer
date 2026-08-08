@@ -4,69 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>App Timer Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0a0e1a;
             --bg-card: rgba(20, 25, 40, 0.7);
-            --bg-card-hover: rgba(25, 32, 52, 0.85);
             --border: rgba(255,255,255,0.06);
-            --border-hover: rgba(255,255,255,0.12);
             --text: #e2e8f0;
             --text-muted: #94a3b8;
             --text-dim: #64748b;
             --accent: #6366f1;
             --accent-glow: rgba(99, 102, 241, 0.3);
             --green: #22c55e;
-            --green-glow: rgba(34, 197, 94, 0.25);
             --yellow: #eab308;
-            --yellow-glow: rgba(234, 179, 8, 0.25);
             --red: #ef4444;
-            --red-glow: rgba(239, 68, 68, 0.25);
             --blue: #3b82f6;
-            --glass: rgba(255,255,255,0.03);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             padding: 0;
-            overflow-x: hidden;
         }
-
-        /* Animated background */
         .bg-orb {
             position: fixed;
             border-radius: 50%;
             filter: blur(120px);
-            opacity: 0.15;
+            opacity: 0.12;
             pointer-events: none;
             z-index: 0;
         }
         .bg-orb-1 { width: 500px; height: 500px; background: var(--accent); top: -10%; left: -10%; animation: float 20s ease-in-out infinite; }
         .bg-orb-2 { width: 400px; height: 400px; background: var(--blue); bottom: -5%; right: -10%; animation: float 25s ease-in-out infinite reverse; }
-        .bg-orb-3 { width: 300px; height: 300px; background: var(--green); top: 40%; left: 50%; animation: float 18s ease-in-out infinite 2s; }
-
         @keyframes float {
             0%, 100% { transform: translate(0, 0) scale(1); }
             33% { transform: translate(30px, -30px) scale(1.1); }
             66% { transform: translate(-20px, 20px) scale(0.95); }
         }
-
         .app-container {
             position: relative;
             z-index: 1;
             max-width: 900px;
             margin: 0 auto;
-            padding: 24px 16px 80px;
+            padding: 24px 16px 100px;
         }
-
-        /* Header */
         .header {
             text-align: center;
             padding: 30px 0 20px;
@@ -80,23 +63,17 @@
             background-clip: text;
             margin-bottom: 6px;
         }
-        .header p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 400;
-        }
+        .header p { color: var(--text-muted); font-size: 0.9rem; }
         .header .next-reset {
             display: inline-block;
             margin-top: 12px;
             padding: 6px 16px;
-            background: var(--glass);
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
             border-radius: 100px;
             font-size: 0.78rem;
             color: var(--text-dim);
         }
-
-        /* Stats bar */
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -111,31 +88,16 @@
             text-align: center;
             backdrop-filter: blur(10px);
         }
-        .stat-pill .stat-num {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-        .stat-pill .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            margin-top: 2px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+        .stat-pill .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .stat-pill .stat-label { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* App Grid */
         .app-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 14px;
         }
+        @media (min-width: 640px) { .app-grid { grid-template-columns: repeat(2, 1fr); } }
 
-        @media (min-width: 640px) {
-            .app-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* App Card */
         .app-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -155,29 +117,12 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-        .app-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--border-hover);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
+        .app-card:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.12); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
         .app-card:hover::before { opacity: 1; }
-
-        .app-card.locked {
-            border-color: rgba(239, 68, 68, 0.3);
-            box-shadow: 0 0 30px var(--red-glow);
-        }
-        .app-card.locked::before {
-            background: linear-gradient(90deg, var(--red), #f97316);
-            opacity: 1;
-        }
-        .app-card.open {
-            border-color: rgba(34, 197, 94, 0.3);
-            box-shadow: 0 0 30px var(--green-glow);
-        }
-        .app-card.open::before {
-            background: linear-gradient(90deg, var(--green), #10b981);
-            opacity: 1;
-        }
+        .app-card.locked { border-color: rgba(239, 68, 68, 0.3); box-shadow: 0 0 30px rgba(239,68,68,0.25); }
+        .app-card.locked::before { background: linear-gradient(90deg, var(--red), #f97316); opacity: 1; }
+        .app-card.open { border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 30px rgba(34,197,94,0.25); }
+        .app-card.open::before { background: linear-gradient(90deg, var(--green), #10b981); opacity: 1; }
 
         .card-header {
             display: flex;
@@ -197,11 +142,7 @@
             border: 1px solid rgba(99,102,241,0.15);
         }
         .app-info { flex: 1; }
-        .app-name {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text);
-        }
+        .app-name { font-size: 1.05rem; font-weight: 700; color: var(--text); }
         .app-status {
             font-size: 0.75rem;
             color: var(--text-dim);
@@ -216,23 +157,19 @@
             border-radius: 50%;
             background: var(--text-dim);
         }
-        .status-dot.open { background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
-        .status-dot.locked { background: var(--red); box-shadow: 0 0 8px var(--red-glow); animation: pulse-dot 1.5s infinite; }
+        .status-dot.open { background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,0.25); }
+        .status-dot.locked { background: var(--red); box-shadow: 0 0 8px rgba(239,68,68,0.25); animation: pulse-dot 1.5s infinite; }
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.85); }
         }
-
-        .card-actions {
-            display: flex;
-            gap: 6px;
-        }
+        .card-actions { display: flex; gap: 6px; }
         .btn-icon {
             width: 34px;
             height: 34px;
             border-radius: 10px;
             border: 1px solid var(--border);
-            background: var(--glass);
+            background: rgba(255,255,255,0.03);
             color: var(--text-muted);
             display: flex;
             align-items: center;
@@ -241,17 +178,10 @@
             font-size: 0.85rem;
             transition: all 0.2s;
         }
-        .btn-icon:hover {
-            background: rgba(255,255,255,0.08);
-            color: var(--text);
-        }
+        .btn-icon:hover { background: rgba(255,255,255,0.08); color: var(--text); }
         .btn-icon.danger:hover { color: var(--red); border-color: rgba(239,68,68,0.3); }
 
-        /* Timer */
-        .timer-section {
-            text-align: center;
-            padding: 10px 0;
-        }
+        .timer-section { text-align: center; padding: 10px 0; }
         .timer-display {
             font-size: 3.2rem;
             font-weight: 800;
@@ -273,18 +203,9 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .timer-label {
-            font-size: 0.7rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
-        }
+        .timer-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
 
-        /* Progress */
-        .progress-wrap {
-            margin: 14px 0;
-        }
+        .progress-wrap { margin: 14px 0; }
         .progress-track {
             height: 8px;
             background: rgba(255,255,255,0.04);
@@ -309,7 +230,6 @@
         }
         .progress-fill.warning { background: linear-gradient(90deg, var(--yellow), #f97316); }
         .progress-fill.danger { background: linear-gradient(90deg, var(--red), #f97316); }
-
         .progress-stats {
             display: flex;
             justify-content: space-between;
@@ -318,7 +238,6 @@
             color: var(--text-dim);
         }
 
-        /* Config */
         .config-row {
             display: flex;
             gap: 8px;
@@ -339,16 +258,8 @@
             text-align: center;
             font-family: inherit;
         }
-        .config-row input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-        .config-row span {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            white-space: nowrap;
-        }
+        .config-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.2); }
+        .config-row span { font-size: 0.8rem; color: var(--text-dim); white-space: nowrap; }
         .btn-save {
             background: linear-gradient(135deg, var(--accent), #8b5cf6);
             color: white;
@@ -361,10 +272,7 @@
             transition: all 0.2s;
             font-family: inherit;
         }
-        .btn-save:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
+        .btn-save:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
         .btn-reset {
             background: rgba(34,197,94,0.1);
             color: var(--green);
@@ -377,15 +285,9 @@
             font-family: inherit;
             transition: all 0.2s;
         }
-        .btn-reset:hover {
-            background: rgba(34,197,94,0.2);
-        }
+        .btn-reset:hover { background: rgba(34,197,94,0.2); }
 
-        /* Add App Section */
-        .add-section {
-            margin-top: 30px;
-            text-align: center;
-        }
+        .add-section { margin-top: 30px; text-align: center; }
         .add-btn {
             display: inline-flex;
             align-items: center;
@@ -400,18 +302,11 @@
             cursor: pointer;
             font-family: inherit;
             transition: all 0.3s;
-            box-shadow: 0 4px 20px var(--accent-glow);
+            box-shadow: 0 4px 20px rgba(99,102,241,0.3);
         }
-        .add-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
-        }
-        .add-btn .plus {
-            font-size: 1.4rem;
-            font-weight: 300;
-        }
+        .add-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99,102,241,0.3); }
+        .add-btn .plus { font-size: 1.4rem; font-weight: 300; }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -425,10 +320,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        .modal-overlay.active { display: flex; opacity: 1; }
         .modal {
             background: linear-gradient(180deg, #141928, #0f1320);
             border: 1px solid var(--border);
@@ -439,17 +331,9 @@
             transform: scale(0.9) translateY(20px);
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-overlay.active .modal {
-            transform: scale(1) translateY(0);
-        }
-        .modal h2 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
+        .modal-overlay.active .modal { transform: scale(1) translateY(0); }
+        .modal h2 { font-size: 1.3rem; margin-bottom: 20px; text-align: center; }
+        .form-group { margin-bottom: 16px; }
         .form-group label {
             display: block;
             font-size: 0.8rem;
@@ -468,11 +352,7 @@
             font-size: 1rem;
             font-family: inherit;
         }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(99,102,241,0.2); }
         .icon-picker {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -492,15 +372,8 @@
             transition: all 0.2s;
         }
         .icon-option:hover { background: rgba(255,255,255,0.05); }
-        .icon-option.selected {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-        }
-        .modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 24px;
-        }
+        .icon-option.selected { border-color: var(--accent); background: rgba(99,102,241,0.2); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
         .modal-actions button {
             flex: 1;
             padding: 12px;
@@ -512,21 +385,11 @@
             border: none;
             transition: all 0.2s;
         }
-        .btn-cancel {
-            background: rgba(255,255,255,0.05);
-            color: var(--text-muted);
-            border: 1px solid var(--border) !important;
-        }
+        .btn-cancel { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border) !important; }
         .btn-cancel:hover { background: rgba(255,255,255,0.1); }
-        .btn-confirm {
-            background: linear-gradient(135deg, var(--accent), #8b5cf6);
-            color: white;
-        }
-        .btn-confirm:hover {
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
+        .btn-confirm { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: white; }
+        .btn-confirm:hover { box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -544,34 +407,13 @@
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
         }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-dim);
-        }
-        .empty-state .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 16px;
-            opacity: 0.3;
-        }
-        .empty-state h3 {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+        .empty-state .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.3; }
+        .empty-state h3 { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 8px; }
 
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 60px;
-            color: var(--text-dim);
-        }
+        .loading { text-align: center; padding: 60px; color: var(--text-dim); }
         .spinner {
             width: 40px;
             height: 40px;
@@ -583,21 +425,56 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* App ID hint */
-        .app-id {
-            font-size: 0.65rem;
+        .app-id { font-size: 0.65rem; color: var(--text-dim); opacity: 0.5; font-family: monospace; margin-top: 4px; }
+
+        /* DEBUG PANEL */
+        .debug-toggle {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
             color: var(--text-dim);
-            opacity: 0.5;
-            font-family: monospace;
-            margin-top: 4px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .debug-panel {
+            position: fixed;
+            bottom: 70px;
+            right: 16px;
+            width: 340px;
+            max-height: 300px;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            z-index: 50;
+            display: none;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .debug-panel.active { display: block; }
+        .debug-panel .debug-title { color: var(--accent); font-weight: 700; margin-bottom: 8px; font-size: 0.8rem; }
+        .debug-panel .debug-entry { margin: 3px 0; word-break: break-all; }
+        .debug-panel .debug-entry.error { color: var(--red); }
+        .debug-panel .debug-entry.ok { color: var(--green); }
+        .debug-panel .debug-entry.warn { color: var(--yellow); }
     </style>
 <base target="_blank">
 </head>
 <body>
     <div class="bg-orb bg-orb-1"></div>
     <div class="bg-orb bg-orb-2"></div>
-    <div class="bg-orb bg-orb-3"></div>
 
     <div class="app-container">
         <div class="header">
@@ -668,17 +545,42 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Debug -->
+    <button class="debug-toggle" onclick="toggleDebug()" title="Debug">🐛</button>
+    <div class="debug-panel" id="debugPanel">
+        <div class="debug-title">🔧 Debug Console</div>
+        <div id="debugContent"></div>
+    </div>
+
     <script>
         // ═══════════════════════════════════════
         // HIER DEINE FIREBASE URL EINTRAGEN!
         // ═══════════════════════════════════════
-        const FIREBASE_URL = 'https://timer-57211-default-rtdb.europe-west1.firebasedatabase.app/apps.json';
+        const FIREBASE_URL = 'https://timer-57211-default-rtdb.europe-west1.firebasedatabase.app/';
         // ═══════════════════════════════════════
 
         const ICONS = ['📱','🎮','📺','🎵','📸','💬','🐦','📰','🛒','🏋️','📖','🎬','🎨','🍿','🔴','📲','💻','🌐','📧','🗺️'];
         let selectedIcon = '📱';
         let appsData = {};
         let localTimers = {};
+        let isResetting = false;
+        let debugLogs = [];
+
+        function debug(msg, type='info') {
+            const time = new Date().toLocaleTimeString('de-CH');
+            debugLogs.push({time, msg, type});
+            if (debugLogs.length > 50) debugLogs.shift();
+            renderDebug();
+        }
+        function renderDebug() {
+            const el = document.getElementById('debugContent');
+            el.innerHTML = debugLogs.map(l => 
+                `<div class="debug-entry ${l.type}">[${l.time}] ${l.msg}</div>`
+            ).join('');
+        }
+        function toggleDebug() {
+            document.getElementById('debugPanel').classList.toggle('active');
+        }
 
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -695,68 +597,158 @@
             const n = new Date();
             const m = new Date(n);
             m.setDate(m.getDate() + 1);
-            m.setHours(0,0,0,0);
+            m.setHours(0, 0, 0, 0);
             return Math.floor((m - n) / 1000);
         }
 
+        // ═══════════════════════════════════════
+        // FIREBASE OPERATIONEN
+        // ═══════════════════════════════════════
+
         async function fetchApps() {
+            debug('Firebase: GET /apps.json', 'info');
             try {
                 const r = await fetch(`${FIREBASE_URL}/apps.json`);
-                appsData = await r.json() || {};
-                return appsData;
+                if (!r.ok) {
+                    debug(`Firebase HTTP Error: ${r.status} ${r.statusText}`, 'error');
+                    showToast(`❌ Firebase Fehler: ${r.status}`);
+                    return null;
+                }
+                const raw = await r.json();
+                debug(`Firebase Antwort: ${JSON.stringify(raw).substring(0, 200)}`, raw === null ? 'warn' : 'ok');
+
+                if (raw === null) {
+                    debug('Firebase: /apps existiert noch nicht (null)', 'warn');
+                    appsData = {};
+                    return {};
+                }
+
+                // Prüfe auf Firebase-Fehlerantwort
+                if (raw && typeof raw === 'object' && raw.error) {
+                    debug(`Firebase Error Objekt: ${JSON.stringify(raw.error)}`, 'error');
+                    showToast('❌ Firebase Fehler – siehe Debug');
+                    return null;
+                }
+
+                // Nur gültige App-Einträge übernehmen (müssen Objekte mit 'name' sein)
+                const validApps = {};
+                for (const [key, val] of Object.entries(raw)) {
+                    if (val && typeof val === 'object' && val.name && typeof val.name === 'string') {
+                        validApps[key] = val;
+                    } else {
+                        debug(`Überspringe ungültigen Eintrag "${key}": ${JSON.stringify(val).substring(0, 50)}`, 'warn');
+                    }
+                }
+
+                appsData = validApps;
+                debug(`${Object.keys(validApps).length} gültige Apps geladen`, 'ok');
+                return validApps;
+
             } catch(e) {
-                showToast('❌ Fehler beim Laden');
-                return {};
+                debug(`Fetch Exception: ${e.message}`, 'error');
+                showToast('❌ Netzwerkfehler');
+                return null;
             }
         }
 
         async function patchApp(appId, data) {
+            debug(`Firebase: PATCH /apps/${appId}.json`, 'info');
             try {
-                await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {
+                const r = await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {
                     method: 'PATCH',
-                    headers: {'Content-Type':'application/json'},
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
+                if (!r.ok) {
+                    debug(`PATCH Fehler: ${r.status}`, 'error');
+                    showToast('❌ Speichern fehlgeschlagen');
+                    return false;
+                }
+                const result = await r.json();
+                debug(`PATCH OK: ${JSON.stringify(result).substring(0, 100)}`, 'ok');
                 return true;
             } catch(e) {
-                showToast('❌ Fehler beim Speichern');
+                debug(`PATCH Exception: ${e.message}`, 'error');
+                showToast('❌ Speichern fehlgeschlagen');
                 return false;
             }
         }
 
         async function deleteApp(appId) {
             if (!confirm(`„${appsData[appId]?.name || appId}" wirklich löschen?`)) return;
+            debug(`Lösche App: ${appId}`, 'warn');
             try {
-                await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {method:'DELETE'});
+                const r = await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {method: 'DELETE'});
+                if (!r.ok) {
+                    debug(`DELETE Fehler: ${r.status}`, 'error');
+                    return;
+                }
                 showToast('🗑️ App gelöscht');
                 await loadAll();
             } catch(e) {
-                showToast('❌ Fehler beim Löschen');
+                debug(`DELETE Exception: ${e.message}`, 'error');
             }
         }
+
+        // ═══════════════════════════════════════
+        // DAILY RESET (nur einmal pro Tag!)
+        // ═══════════════════════════════════════
 
         async function checkDailyReset() {
+            if (isResetting) {
+                debug('Reset übersprungen – bereits am Resetten', 'warn');
+                return;
+            }
+
             const today = getToday();
-            let didReset = false;
+            debug(`Prüfe Reset für ${today}...`, 'info');
+
+            let needsReset = false;
+            const appsToReset = [];
+
             for (const [id, app] of Object.entries(appsData)) {
-                if (app.lastResetDate !== today) {
-                    await patchApp(id, {
-                        timeUsed: 0,
-                        locked: false,
-                        lastResetDate: today
-                    });
-                    didReset = true;
+                const appDate = app.lastResetDate;
+                debug(`  ${id}: lastResetDate=${appDate}, today=${today}, match=${appDate === today}`, 'info');
+
+                if (appDate !== today) {
+                    needsReset = true;
+                    appsToReset.push(id);
                 }
             }
-            if (didReset) {
-                showToast('🌙 Täglicher Reset durchgeführt');
-                await fetchApps();
+
+            if (!needsReset) {
+                debug('Kein Reset nötig – alle Apps sind aktuell', 'ok');
+                return;
             }
+
+            isResetting = true;
+            debug(`Resette ${appsToReset.length} Apps...`, 'warn');
+
+            for (const id of appsToReset) {
+                const ok = await patchApp(id, {
+                    timeUsed: 0,
+                    locked: false,
+                    lastResetDate: today
+                });
+                if (!ok) {
+                    debug(`Reset für ${id} fehlgeschlagen!`, 'error');
+                }
+            }
+
+            showToast('🌙 Täglicher Reset durchgeführt');
+
+            // Neu laden, damit appsData aktualisiert ist
+            await fetchApps();
+            isResetting = false;
         }
 
+        // ═══════════════════════════════════════
+        // RENDERING
+        // ═══════════════════════════════════════
+
         function formatTime(sec) {
-            const m = Math.floor(Math.abs(sec) / 60).toString().padStart(2,'0');
-            const s = Math.abs(sec % 60).toString().padStart(2,'0');
+            const m = Math.floor(Math.abs(sec) / 60).toString().padStart(2, '0');
+            const s = Math.abs(sec % 60).toString().padStart(2, '0');
             return `${m}:${s}`;
         }
 
@@ -853,30 +845,39 @@
                 showToast('❌ Limit: 1–300 Min');
                 return;
             }
-            await patchApp(id, { timeLimit: limit });
-            showToast(`✅ ${appsData[id]?.name || id}: ${limit} Min`);
-            await fetchApps();
-            renderApps();
+            const ok = await patchApp(id, { timeLimit: limit });
+            if (ok) {
+                showToast(`✅ ${appsData[id]?.name || id}: ${limit} Min`);
+                await fetchApps();
+                renderApps();
+            }
         }
 
         async function resetApp(id) {
-            await patchApp(id, {
+            const ok = await patchApp(id, {
                 timeUsed: 0,
                 locked: false,
                 lastResetDate: getToday()
             });
-            showToast(`🔄 ${appsData[id]?.name || id} zurückgesetzt`);
-            await fetchApps();
-            renderApps();
+            if (ok) {
+                showToast(`🔄 ${appsData[id]?.name || id} zurückgesetzt`);
+                await fetchApps();
+                renderApps();
+            }
         }
 
-        // Local timer updates
+        // ═══════════════════════════════════════
+        // LOCAL TIMERS
+        // ═══════════════════════════════════════
+
         function startLocalTimers() {
-            Object.keys(localTimers).forEach(clearInterval);
+            // Alte Timer stoppen
+            Object.values(localTimers).forEach(clearInterval);
             localTimers = {};
 
             for (const [id, app] of Object.entries(appsData)) {
                 if (app.isOpen && !app.locked) {
+                    debug(`Starte lokalen Timer für ${id}`, 'info');
                     localTimers[id] = setInterval(async () => {
                         const limit = (app.timeLimit || 30) * 60;
                         app.timeUsed = (app.timeUsed || 0) + 1;
@@ -895,7 +896,10 @@
             }
         }
 
-        // Modal
+        // ═══════════════════════════════════════
+        // MODAL
+        // ═══════════════════════════════════════
+
         function openModal() {
             document.getElementById('modal').classList.add('active');
             document.getElementById('newAppName').focus();
@@ -938,25 +942,46 @@
                 lastResetDate: getToday()
             };
 
-            await patchApp(id, newApp);
-            showToast(`✅ „${name}" hinzugefügt`);
+            debug(`Erstelle App: ${id} = ${JSON.stringify(newApp)}`, 'info');
+            const ok = await patchApp(id, newApp);
 
-            document.getElementById('newAppName').value = '';
-            document.getElementById('newAppId').value = '';
-            closeModal();
-            await loadAll();
+            if (ok) {
+                showToast(`✅ „${name}" hinzugefügt`);
+                document.getElementById('newAppName').value = '';
+                document.getElementById('newAppId').value = '';
+                closeModal();
+                await loadAll();
+            }
         }
 
+        // ═══════════════════════════════════════
+        // HAUPTLOOP
+        // ═══════════════════════════════════════
+
         async function loadAll() {
-            await fetchApps();
-            await checkDailyReset();
-            renderApps();
-            startLocalTimers();
+            debug('=== loadAll() start ===', 'info');
+            const result = await fetchApps();
+
+            if (result !== null) {
+                await checkDailyReset();
+                renderApps();
+                startLocalTimers();
+            } else {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <div class="empty-icon">⚠️</div>
+                        <h3>Fehler beim Laden</h3>
+                        <p>Firebase konnte nicht erreicht werden.<br>Prüfe die URL und die Regeln.</p>
+                    </div>`;
+            }
+            debug('=== loadAll() ende ===', 'info');
         }
 
         // Init
         renderIconPicker();
         loadAll();
+
+        // Alle 10 Sekunden neu laden (aber nicht den Reset triggern, wenn nicht nötig)
         setInterval(loadAll, 10000);
     </script>
 </body>
