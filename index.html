@@ -857,7 +857,8 @@
             const ok = await patchApp(id, {
                 timeUsed: 0,
                 locked: false,
-                lastResetDate: getToday()
+                lastResetDate: getToday(),
+                lastOpen: new Date().toISOString()
             });
             if (ok) {
                 showToast(`🔄 ${appsData[id]?.name || id} zurückgesetzt`);
@@ -885,7 +886,7 @@
                         if (app.timeUsed >= limit) {
                             app.locked = true;
                             app.isOpen = false;
-                            await patchApp(id, { locked: true, isOpen: false, timeUsed: app.timeUsed });
+                            await patchApp(id, { locked: true, isOpen: false, timeUsed: app.timeUsed, lastOpen: new Date().toISOString() });
                             showToast(`⛔ ${app.name || id} – Limit erreicht!`);
                             clearInterval(localTimers[id]);
                             delete localTimers[id];
@@ -939,7 +940,8 @@
                 timeUsed: 0,
                 locked: false,
                 isOpen: false,
-                lastResetDate: getToday()
+                lastResetDate: getToday(),
+                lastOpen: new Date().toISOString()
             };
 
             debug(`Erstelle App: ${id} = ${JSON.stringify(newApp)}`, 'info');
