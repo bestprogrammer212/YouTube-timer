@@ -498,7 +498,6 @@
         const ICONS = ['📱','🎮','📺','🎵','📸','💬','🐦','📰','🛒','🏋️','📖','🎬','🎨','🍿','🔴','📲','💻','🌐','📧','🗺️'];
         let selectedIcon = '📱';
         let appsData = {};
-        let localTimers = {};
         let isResetting = false;
 
         function showToast(msg) {
@@ -518,6 +517,39 @@
             m.setDate(m.getDate() + 1);
             m.setHours(0, 0, 0, 0);
             return Math.floor((m - n) / 1000);
+        }
+
+        // ═══════════════════════════════════════
+        // BERECHNE AKTUELLE ZEIT (inkl. offene Zeit)
+        // ═══════════════════════════════════════
+
+        function calculateLiveTimeUsed(app) {
+            const timeUsed = app.timeUsed || 0;
+            const limit = (app.timeLimit || 30) * 60;
+
+            // Wenn App gerade offen ist, addiere die Zeit seit lastOpen
+            if (app.isOpen && app.lastOpen) {
+                const lastOpen = new Date(app.lastOpen);
+                const now = new Date();
+                const secondsOpen = Math.floor((now - lastOpen) / 1000);
+                const total = timeUsed + secondsOpen;
+                return {
+                    total: total,
+                    limit: limit,
+                    remaining: Math.max(0, limit - total),
+                    isOver: total >= limit,
+                    percent: Math.min(100, (total / limit) * 100)
+                };
+            }
+
+            // App ist geschlossen
+            return {
+                total: timeUsed,
+                limit: limit,
+                remaining: Math.max(0, limit - timeUsed),
+                isOver: timeUsed >= limit,
+                percent: Math.min(100, (timeUsed / limit) * 100)
+            };
         }
 
         async function fetchApps() {
@@ -635,17 +667,17 @@
 
             grid.innerHTML = ids.map(id => {
                 const app = appsData[id];
-                const limit = (app.timeLimit || 30) * 60;
-                const used = app.timeUsed || 0;
-                const left = Math.max(0, limit - used);
-                const pct = Math.min(100, (used / limit) * 100);
-                const isLocked = app.locked || false;
+
+                // LIVE Berechnung - inkl. Zeit seit lastOpen wenn offen
+                const live = calculateLiveTimeUsed(app);
+
+                const isLocked = app.locked || live.isOver;
                 const isOpen = app.isOpen || false;
 
                 let timerClass = '';
                 let progressClass = '';
-                if (pct > 90) { timerClass = 'danger'; progressClass = 'danger'; }
-                else if (pct > 70) { timerClass = 'warning'; progressClass = 'warning'; }
+                if (live.percent > 90) { timerClass = 'danger'; progressClass = 'danger'; }
+                else if (live.percent > 70) { timerClass = 'warning'; progressClass = 'warning'; }
 
                 let statusText = 'Geschlossen';
                 let statusDotClass = '';
@@ -670,17 +702,17 @@
                         </div>
 
                         <div class="timer-section">
-                            <div class="timer-display ${timerClass}">${formatTime(left)}</div>
+                            <div class="timer-display ${timerClass}">${formatTime(live.remaining)}</div>
                             <div class="timer-label">Verbleibend</div>
                         </div>
 
                         <div class="progress-wrap">
                             <div class="progress-track">
-                                <div class="progress-fill ${progressClass}" style="width:${pct}%"></div>
+                                <div class="progress-fill ${progressClass}" style="width:${live.percent}%"></div>
                             </div>
                             <div class="progress-stats">
-                                <span>${(used/60).toFixed(1)} Min genutzt</span>
-                                <span>${(limit/60)} Min Limit</span>
+                                <span>${(live.total/60).toFixed(1)} Min genutzt</span>
+                                <span>${(live.limit/60)} Min Limit</span>
                             </div>
                         </div>
 
@@ -722,30 +754,6 @@
                 showToast(`🔄 ${appsData[id]?.name || id} zurückgesetzt`);
                 await fetchApps();
                 renderApps();
-            }
-        }
-
-        function startLocalTimers() {
-            Object.values(localTimers).forEach(clearInterval);
-            localTimers = {};
-
-            for (const [id, app] of Object.entries(appsData)) {
-                if (app.isOpen && !app.locked) {
-                    localTimers[id] = setInterval(async () => {
-                        const limit = (app.timeLimit || 30) * 60;
-                        app.timeUsed = (app.timeUsed || 0) + 1;
-
-                        if (app.timeUsed >= limit) {
-                            app.locked = true;
-                            app.isOpen = false;
-                            await patchApp(id, { locked: true, isOpen: false, timeUsed: app.timeUsed, lastOpen: new Date().toISOString() });
-                            showToast(`⛔ ${app.name || id} – Limit erreicht!`);
-                            clearInterval(localTimers[id]);
-                            delete localTimers[id];
-                        }
-                        renderApps();
-                    }, 1000);
-                }
             }
         }
 
@@ -807,7 +815,6 @@
             if (result !== null) {
                 await checkDailyReset();
                 renderApps();
-                startLocalTimers();
             } else {
                 document.getElementById('appGrid').innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
@@ -818,8 +825,15 @@
             }
         }
 
+        // Init
         renderIconPicker();
         loadAll();
+
+        // Jede Sekunde aktualisieren (nur UI, kein Firebase-Call)
+        // Die Zeit wird lokal aus lastOpen berechnet
+        setInterval(renderApps, 1000);
+
+        // Alle 10 Sekunden von Firebase neu laden
         setInterval(loadAll, 10000);
     </script>
 </body>
