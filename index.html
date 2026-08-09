@@ -499,6 +499,7 @@
         let selectedIcon = '📱';
         let appsData = {};
         let isResetting = false;
+        let isEditing = false;
 
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -719,7 +720,9 @@
                         <div class="config-row">
                             <input type="number" value="${app.timeLimit || 30}" 
                                 min="1" max="300" 
-                                onchange="updateLimit('${id}', this.value)">
+                                onfocus="isEditing=true" 
+                                onblur="isEditing=false; updateLimit('${id}', this.value)"
+                                onkeydown="if(event.key==='Enter'){isEditing=false; updateLimit('${id}', this.value)}">
                             <span>Min</span>
                             <button class="btn-save" onclick="updateLimit('${id}', this.parentElement.querySelector('input').value)">💾</button>
                             <button class="btn-reset" onclick="resetApp('${id}')">↺ Reset</button>
@@ -733,6 +736,7 @@
             const limit = parseInt(val);
             if (isNaN(limit) || limit < 1 || limit > 300) {
                 showToast('❌ Limit: 1–300 Min');
+                isEditing = false;
                 return;
             }
             // Sofort lokal aktualisieren für sofortige Anzeige
@@ -742,9 +746,11 @@
             const ok = await patchApp(id, { timeLimit: limit });
             if (ok) {
                 showToast(`✅ ${appsData[id]?.name || id}: ${limit} Min`);
+                isEditing = false;
                 renderApps(); // Sofort neu rendern mit neuem Limit
             } else {
                 // Bei Fehler zurücksetzen
+                isEditing = false;
                 await fetchApps();
                 renderApps();
             }
@@ -848,7 +854,10 @@
 
         // Jede Sekunde aktualisieren (nur UI, kein Firebase-Call)
         // Die Zeit wird lokal aus lastOpen berechnet
-        setInterval(renderApps, 1000);
+        // ABER: Pausieren wenn Benutzer gerade ein Input-Feld bearbeitet
+        setInterval(() => {
+            if (!isEditing) renderApps();
+        }, 1000);
 
         // Alle 10 Sekunden von Firebase neu laden
         setInterval(loadAll, 10000);
