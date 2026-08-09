@@ -731,27 +731,44 @@
 
         async function updateLimit(id, val) {
             const limit = parseInt(val);
-            if (limit < 1 || limit > 300) {
+            if (isNaN(limit) || limit < 1 || limit > 300) {
                 showToast('❌ Limit: 1–300 Min');
                 return;
+            }
+            // Sofort lokal aktualisieren für sofortige Anzeige
+            if (appsData[id]) {
+                appsData[id].timeLimit = limit;
             }
             const ok = await patchApp(id, { timeLimit: limit });
             if (ok) {
                 showToast(`✅ ${appsData[id]?.name || id}: ${limit} Min`);
+                renderApps(); // Sofort neu rendern mit neuem Limit
+            } else {
+                // Bei Fehler zurücksetzen
                 await fetchApps();
                 renderApps();
             }
         }
 
         async function resetApp(id) {
+            const currentLimit = appsData[id]?.timeLimit || 30;
             const ok = await patchApp(id, {
                 timeUsed: 0,
                 locked: false,
                 lastResetDate: getToday(),
-                lastOpen: new Date().toISOString()
+                lastOpen: new Date().toISOString(),
+                timeLimit: currentLimit // Behalte aktuelles Limit bei
             });
             if (ok) {
+                if (appsData[id]) {
+                    appsData[id].timeUsed = 0;
+                    appsData[id].locked = false;
+                    appsData[id].lastResetDate = getToday();
+                    appsData[id].lastOpen = new Date().toISOString();
+                }
                 showToast(`🔄 ${appsData[id]?.name || id} zurückgesetzt`);
+                renderApps();
+            } else {
                 await fetchApps();
                 renderApps();
             }
@@ -792,7 +809,7 @@
             const newApp = {
                 name: name,
                 icon: selectedIcon,
-                timeLimit: limit || 30,
+                timeLimit: limit,
                 timeUsed: 0,
                 locked: false,
                 isOpen: false,
