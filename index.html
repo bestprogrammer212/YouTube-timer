@@ -14,7 +14,6 @@
             --text-muted: #94a3b8;
             --text-dim: #64748b;
             --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.3);
             --green: #22c55e;
             --yellow: #eab308;
             --red: #ef4444;
@@ -90,14 +89,12 @@
         }
         .stat-pill .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
         .stat-pill .stat-label { font-size: 0.7rem; color: var(--text-dim); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-
         .app-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 14px;
         }
         @media (min-width: 640px) { .app-grid { grid-template-columns: repeat(2, 1fr); } }
-
         .app-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -123,7 +120,6 @@
         .app-card.locked::before { background: linear-gradient(90deg, var(--red), #f97316); opacity: 1; }
         .app-card.open { border-color: rgba(34, 197, 94, 0.3); box-shadow: 0 0 30px rgba(34,197,94,0.25); }
         .app-card.open::before { background: linear-gradient(90deg, var(--green), #10b981); opacity: 1; }
-
         .card-header {
             display: flex;
             align-items: center;
@@ -180,7 +176,6 @@
         }
         .btn-icon:hover { background: rgba(255,255,255,0.08); color: var(--text); }
         .btn-icon.danger:hover { color: var(--red); border-color: rgba(239,68,68,0.3); }
-
         .timer-section { text-align: center; padding: 10px 0; }
         .timer-display {
             font-size: 3.2rem;
@@ -204,7 +199,6 @@
             -webkit-text-fill-color: transparent;
         }
         .timer-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
-
         .progress-wrap { margin: 14px 0; }
         .progress-track {
             height: 8px;
@@ -237,7 +231,6 @@
             font-size: 0.75rem;
             color: var(--text-dim);
         }
-
         .config-row {
             display: flex;
             gap: 8px;
@@ -286,7 +279,6 @@
             transition: all 0.2s;
         }
         .btn-reset:hover { background: rgba(34,197,94,0.2); }
-
         .add-section { margin-top: 30px; text-align: center; }
         .add-btn {
             display: inline-flex;
@@ -306,7 +298,6 @@
         }
         .add-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(99,102,241,0.3); }
         .add-btn .plus { font-size: 1.4rem; font-weight: 300; }
-
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -389,7 +380,6 @@
         .btn-cancel:hover { background: rgba(255,255,255,0.1); }
         .btn-confirm { background: linear-gradient(135deg, var(--accent), #8b5cf6); color: white; }
         .btn-confirm:hover { box-shadow: 0 4px 20px rgba(99,102,241,0.3); }
-
         .toast {
             position: fixed;
             bottom: 24px;
@@ -408,11 +398,9 @@
             pointer-events: none;
         }
         .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
         .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); }
         .empty-state .empty-icon { font-size: 4rem; margin-bottom: 16px; opacity: 0.3; }
         .empty-state h3 { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 8px; }
-
         .loading { text-align: center; padding: 60px; color: var(--text-dim); }
         .spinner {
             width: 40px;
@@ -424,51 +412,7 @@
             margin: 0 auto 16px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .app-id { font-size: 0.65rem; color: var(--text-dim); opacity: 0.5; font-family: monospace; margin-top: 4px; }
-
-        /* DEBUG PANEL */
-        .debug-toggle {
-            position: fixed;
-            bottom: 16px;
-            right: 16px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .debug-panel {
-            position: fixed;
-            bottom: 70px;
-            right: 16px;
-            width: 340px;
-            max-height: 300px;
-            background: #0d1117;
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px;
-            z-index: 50;
-            display: none;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .debug-panel.active { display: block; }
-        .debug-panel .debug-title { color: var(--accent); font-weight: 700; margin-bottom: 8px; font-size: 0.8rem; }
-        .debug-panel .debug-entry { margin: 3px 0; word-break: break-all; }
-        .debug-panel .debug-entry.error { color: var(--red); }
-        .debug-panel .debug-entry.ok { color: var(--green); }
-        .debug-panel .debug-entry.warn { color: var(--yellow); }
     </style>
 <base target="_blank">
 </head>
@@ -513,7 +457,6 @@
         </div>
     </div>
 
-    <!-- Modal -->
     <div class="modal-overlay" id="modal" onclick="closeModal(event)">
         <div class="modal" onclick="event.stopPropagation()">
             <h2>Neue App</h2>
@@ -545,18 +488,11 @@
 
     <div class="toast" id="toast"></div>
 
-    <!-- Debug -->
-    <button class="debug-toggle" onclick="toggleDebug()" title="Debug">🐛</button>
-    <div class="debug-panel" id="debugPanel">
-        <div class="debug-title">🔧 Debug Console</div>
-        <div id="debugContent"></div>
-    </div>
-
     <script>
         // ═══════════════════════════════════════
         // HIER DEINE FIREBASE URL EINTRAGEN!
         // ═══════════════════════════════════════
-        const FIREBASE_URL = 'https://timer-57211-default-rtdb.europe-west1.firebasedatabase.app/';
+        const FIREBASE_URL = 'https://timer-57211-default-rtdb.europe-west1.firebasedatabase.app';
         // ═══════════════════════════════════════
 
         const ICONS = ['📱','🎮','📺','🎵','📸','💬','🐦','📰','🛒','🏋️','📖','🎬','🎨','🍿','🔴','📲','💻','🌐','📧','🗺️'];
@@ -564,23 +500,6 @@
         let appsData = {};
         let localTimers = {};
         let isResetting = false;
-        let debugLogs = [];
-
-        function debug(msg, type='info') {
-            const time = new Date().toLocaleTimeString('de-CH');
-            debugLogs.push({time, msg, type});
-            if (debugLogs.length > 50) debugLogs.shift();
-            renderDebug();
-        }
-        function renderDebug() {
-            const el = document.getElementById('debugContent');
-            el.innerHTML = debugLogs.map(l => 
-                `<div class="debug-entry ${l.type}">[${l.time}] ${l.msg}</div>`
-            ).join('');
-        }
-        function toggleDebug() {
-            document.getElementById('debugPanel').classList.toggle('active');
-        }
 
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -601,74 +520,44 @@
             return Math.floor((m - n) / 1000);
         }
 
-        // ═══════════════════════════════════════
-        // FIREBASE OPERATIONEN
-        // ═══════════════════════════════════════
-
         async function fetchApps() {
-            debug('Firebase: GET /apps.json', 'info');
             try {
                 const r = await fetch(`${FIREBASE_URL}/apps.json`);
                 if (!r.ok) {
-                    debug(`Firebase HTTP Error: ${r.status} ${r.statusText}`, 'error');
                     showToast(`❌ Firebase Fehler: ${r.status}`);
                     return null;
                 }
                 const raw = await r.json();
-                debug(`Firebase Antwort: ${JSON.stringify(raw).substring(0, 200)}`, raw === null ? 'warn' : 'ok');
 
                 if (raw === null) {
-                    debug('Firebase: /apps existiert noch nicht (null)', 'warn');
                     appsData = {};
                     return {};
                 }
 
-                // Prüfe auf Firebase-Fehlerantwort
-                if (raw && typeof raw === 'object' && raw.error) {
-                    debug(`Firebase Error Objekt: ${JSON.stringify(raw.error)}`, 'error');
-                    showToast('❌ Firebase Fehler – siehe Debug');
-                    return null;
-                }
-
-                // Nur gültige App-Einträge übernehmen (müssen Objekte mit 'name' sein)
                 const validApps = {};
                 for (const [key, val] of Object.entries(raw)) {
                     if (val && typeof val === 'object' && val.name && typeof val.name === 'string') {
                         validApps[key] = val;
-                    } else {
-                        debug(`Überspringe ungültigen Eintrag "${key}": ${JSON.stringify(val).substring(0, 50)}`, 'warn');
                     }
                 }
 
                 appsData = validApps;
-                debug(`${Object.keys(validApps).length} gültige Apps geladen`, 'ok');
                 return validApps;
-
             } catch(e) {
-                debug(`Fetch Exception: ${e.message}`, 'error');
                 showToast('❌ Netzwerkfehler');
                 return null;
             }
         }
 
         async function patchApp(appId, data) {
-            debug(`Firebase: PATCH /apps/${appId}.json`, 'info');
             try {
                 const r = await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {
                     method: 'PATCH',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
-                if (!r.ok) {
-                    debug(`PATCH Fehler: ${r.status}`, 'error');
-                    showToast('❌ Speichern fehlgeschlagen');
-                    return false;
-                }
-                const result = await r.json();
-                debug(`PATCH OK: ${JSON.stringify(result).substring(0, 100)}`, 'ok');
-                return true;
+                return r.ok;
             } catch(e) {
-                debug(`PATCH Exception: ${e.message}`, 'error');
                 showToast('❌ Speichern fehlgeschlagen');
                 return false;
             }
@@ -676,75 +565,44 @@
 
         async function deleteApp(appId) {
             if (!confirm(`„${appsData[appId]?.name || appId}" wirklich löschen?`)) return;
-            debug(`Lösche App: ${appId}`, 'warn');
             try {
-                const r = await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {method: 'DELETE'});
-                if (!r.ok) {
-                    debug(`DELETE Fehler: ${r.status}`, 'error');
-                    return;
-                }
+                await fetch(`${FIREBASE_URL}/apps/${appId}.json`, {method: 'DELETE'});
                 showToast('🗑️ App gelöscht');
                 await loadAll();
             } catch(e) {
-                debug(`DELETE Exception: ${e.message}`, 'error');
+                showToast('❌ Fehler beim Löschen');
             }
         }
 
-        // ═══════════════════════════════════════
-        // DAILY RESET (nur einmal pro Tag!)
-        // ═══════════════════════════════════════
-
         async function checkDailyReset() {
-            if (isResetting) {
-                debug('Reset übersprungen – bereits am Resetten', 'warn');
-                return;
-            }
-
+            if (isResetting) return;
             const today = getToday();
-            debug(`Prüfe Reset für ${today}...`, 'info');
-
             let needsReset = false;
             const appsToReset = [];
 
             for (const [id, app] of Object.entries(appsData)) {
-                const appDate = app.lastResetDate;
-                debug(`  ${id}: lastResetDate=${appDate}, today=${today}, match=${appDate === today}`, 'info');
-
-                if (appDate !== today) {
+                if (app.lastResetDate !== today) {
                     needsReset = true;
                     appsToReset.push(id);
                 }
             }
 
-            if (!needsReset) {
-                debug('Kein Reset nötig – alle Apps sind aktuell', 'ok');
-                return;
-            }
-
+            if (!needsReset) return;
             isResetting = true;
-            debug(`Resette ${appsToReset.length} Apps...`, 'warn');
 
             for (const id of appsToReset) {
-                const ok = await patchApp(id, {
+                await patchApp(id, {
                     timeUsed: 0,
                     locked: false,
-                    lastResetDate: today
+                    lastResetDate: today,
+                    lastOpen: new Date().toISOString()
                 });
-                if (!ok) {
-                    debug(`Reset für ${id} fehlgeschlagen!`, 'error');
-                }
             }
 
             showToast('🌙 Täglicher Reset durchgeführt');
-
-            // Neu laden, damit appsData aktualisiert ist
             await fetchApps();
             isResetting = false;
         }
-
-        // ═══════════════════════════════════════
-        // RENDERING
-        // ═══════════════════════════════════════
 
         function formatTime(sec) {
             const m = Math.floor(Math.abs(sec) / 60).toString().padStart(2, '0');
@@ -762,7 +620,7 @@
 
             const sec = secondsUntilMidnight();
             const h = Math.floor(sec / 3600);
-            const m = Math.floor((sec % 3600) / 60);
+            const m = Math.floor((sec % 3600) / 60000);
             document.getElementById('nextReset').textContent = `⏰ Nächster Reset in ${h}h ${m}min`;
 
             if (ids.length === 0) {
@@ -867,18 +725,12 @@
             }
         }
 
-        // ═══════════════════════════════════════
-        // LOCAL TIMERS
-        // ═══════════════════════════════════════
-
         function startLocalTimers() {
-            // Alte Timer stoppen
             Object.values(localTimers).forEach(clearInterval);
             localTimers = {};
 
             for (const [id, app] of Object.entries(appsData)) {
                 if (app.isOpen && !app.locked) {
-                    debug(`Starte lokalen Timer für ${id}`, 'info');
                     localTimers[id] = setInterval(async () => {
                         const limit = (app.timeLimit || 30) * 60;
                         app.timeUsed = (app.timeUsed || 0) + 1;
@@ -896,10 +748,6 @@
                 }
             }
         }
-
-        // ═══════════════════════════════════════
-        // MODAL
-        // ═══════════════════════════════════════
 
         function openModal() {
             document.getElementById('modal').classList.add('active');
@@ -944,9 +792,7 @@
                 lastOpen: new Date().toISOString()
             };
 
-            debug(`Erstelle App: ${id} = ${JSON.stringify(newApp)}`, 'info');
             const ok = await patchApp(id, newApp);
-
             if (ok) {
                 showToast(`✅ „${name}" hinzugefügt`);
                 document.getElementById('newAppName').value = '';
@@ -956,34 +802,24 @@
             }
         }
 
-        // ═══════════════════════════════════════
-        // HAUPTLOOP
-        // ═══════════════════════════════════════
-
         async function loadAll() {
-            debug('=== loadAll() start ===', 'info');
             const result = await fetchApps();
-
             if (result !== null) {
                 await checkDailyReset();
                 renderApps();
                 startLocalTimers();
             } else {
-                grid.innerHTML = `
+                document.getElementById('appGrid').innerHTML = `
                     <div class="empty-state" style="grid-column:1/-1;">
                         <div class="empty-icon">⚠️</div>
                         <h3>Fehler beim Laden</h3>
-                        <p>Firebase konnte nicht erreicht werden.<br>Prüfe die URL und die Regeln.</p>
+                        <p>Firebase konnte nicht erreicht werden.</p>
                     </div>`;
             }
-            debug('=== loadAll() ende ===', 'info');
         }
 
-        // Init
         renderIconPicker();
         loadAll();
-
-        // Alle 10 Sekunden neu laden (aber nicht den Reset triggern, wenn nicht nötig)
         setInterval(loadAll, 10000);
     </script>
 </body>
